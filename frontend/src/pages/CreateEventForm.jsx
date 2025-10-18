@@ -125,7 +125,7 @@ const CreateEventForm = () => {
   }, [startDate]);
 
   return (
-    <div className="w-full lg:w-1/2   bg-white rounded-lg shadow-2xl">
+    <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-2xl">
       <div className="p-6">
         <h2 className="font-medium text-xl text-black">Create Events</h2>
 
@@ -259,7 +259,7 @@ const CreateEventForm = () => {
           </div>
         </div>
 
-        <div className="mt-20 w-full flex justify-center lg:justify-start">
+        <div className="mt-14  w-full flex justify-center lg:justify-start">
           <button
             type="button"
             className="w-1/2 flex items-center justify-center gap-2 lg:w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm lg:text-base py-2.5 rounded-md transition-colors duration-200"

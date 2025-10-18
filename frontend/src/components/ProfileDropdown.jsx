@@ -1,22 +1,40 @@
 import { useState } from "react";
-import { ChevronsUpDown, Search } from "lucide-react";
+import { ChevronsUpDown, Plus, Search } from "lucide-react";
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState("");
   const [search, setSearch] = useState("");
+  const [isAdding, setIsAdding] = useState(false);
+  const [newUser, setNewUser] = useState("");
 
-  const users = ["User1", "User2", "User3", "User4"];
+  const [users, setUsers] = useState([
+    "User1",
+    "User2",
+    "User3",
+    "User4",
+    "User5",
+    "User6",
+  ]);
 
   const filtered = users.filter((user) =>
     user.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleAddUser = () => {
+    if (newUser.trim() !== "") {
+      setUsers((prev) => [...prev, newUser.trim()]);
+      setNewUser("");
+      setIsAdding(false);
+    }
+  };
+
   return (
     <div className="w-full mt-2 relative">
+      {/* Dropdown Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10"
+        className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
         <span
           className={`text-sm ${
@@ -29,7 +47,7 @@ export default function ProfileDropdown() {
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 mt-1 w-50 h-36 overflow-x-hidden bg-white rounded-md shadow-lg border border-gray-300 z-10">
+        <div className="absolute left-0 mt-1 w-52 bg-white rounded-md shadow-lg border border-gray-300 z-10">
           <div className="flex items-center h-8 w-full border-b border-gray-200 bg-gray-50 gap-x-2 sticky top-0">
             <div className="flex items-center w-5 ml-5">
               <Search className="size-4 text-gray-400" />
@@ -42,18 +60,48 @@ export default function ProfileDropdown() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          {filtered.map((user) => (
-            <div
-              key={user}
-              onClick={() => {
-                setSelected(user);
-                setIsOpen(false);
-              }}
-              className="px-4 py-2 text-sm hover:bg-purple-500/80 rounded-md cursor-pointer"
-            >
-              {user}
-            </div>
-          ))}
+
+          <div className="max-h-32 overflow-y-auto">
+            {filtered.map((user) => (
+              <div
+                key={user}
+                onClick={() => {
+                  setSelected(user);
+                  setIsOpen(false);
+                }}
+                className="px-4 py-2 text-sm hover:bg-purple-500/80 hover:text-white cursor-pointer"
+              >
+                {user}
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-gray-300 bg-gray-50 flex items-center justify-center h-10 p-1">
+            {!isAdding ? (
+              <button
+                className="flex items-center gap-1 text-sm text-black font-semibold"
+                onClick={() => setIsAdding(true)}
+              >
+                <Plus className="size-3" /> Add User
+              </button>
+            ) : (
+              <div className="flex w-full gap-1 px-2">
+                <input
+                  type="text"
+                  placeholder="Enter name"
+                  className="w-2/3 text-sm border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  value={newUser}
+                  onChange={(e) => setNewUser(e.target.value)}
+                />
+                <button
+                  onClick={handleAddUser}
+                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600"
+                >
+                  Add
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
