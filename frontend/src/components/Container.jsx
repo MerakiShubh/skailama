@@ -1,7 +1,7 @@
-import React from "react";
-import CreateEventForm from "../pages/CreateEventForm";
-import Events from "../pages/Events";
-import ProfileDropdown from "./ProfileDropdown";
+import React from 'react';
+import CreateEventForm from '../pages/CreateEventForm';
+import Events from '../pages/Events';
+import ProfileDropdown from './ProfileDropdown';
 
 const Container = () => {
   return (
@@ -10,13 +10,11 @@ const Container = () => {
         <div className="w-full flex justify-between items-center  h-1/9">
           <div className="w-full">
             <h1 className="text-black font-bold text-2xl">Event Management</h1>
-            <p className="font-bold text-md text-gray-400">
-              Create and manage events across multiple events
-            </p>
+            <p className="font-bold text-md text-gray-400">Create and manage events across multiple events</p>
           </div>
           <div className="w-50">
-            {" "}
-            <ProfileDropdown />{" "}
+            {' '}
+            <ProfileDropdown />{' '}
           </div>
         </div>
 

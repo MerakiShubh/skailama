@@ -1,30 +1,21 @@
-import { useState } from "react";
-import { ChevronsUpDown, Plus, Search } from "lucide-react";
+import { useState } from 'react';
+import { ChevronsUpDown, Plus, Search } from 'lucide-react';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("");
-  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState('');
+  const [search, setSearch] = useState('');
   const [isAdding, setIsAdding] = useState(false);
-  const [newUser, setNewUser] = useState("");
+  const [newUser, setNewUser] = useState('');
 
-  const [users, setUsers] = useState([
-    "User1",
-    "User2",
-    "User3",
-    "User4",
-    "User5",
-    "User6",
-  ]);
+  const [users, setUsers] = useState(['User1', 'User2', 'User3', 'User4', 'User5', 'User6']);
 
-  const filtered = users.filter((user) =>
-    user.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = users.filter((user) => user.toLowerCase().includes(search.toLowerCase()));
 
   const handleAddUser = () => {
-    if (newUser.trim() !== "") {
+    if (newUser.trim() !== '') {
       setUsers((prev) => [...prev, newUser.trim()]);
-      setNewUser("");
+      setNewUser('');
       setIsAdding(false);
     }
   };
@@ -36,12 +27,8 @@ export default function ProfileDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
-        <span
-          className={`text-sm ${
-            selected ? "text-gray-600 font-medium" : "text-black font-medium"
-          }`}
-        >
-          {selected || "Select profile"}
+        <span className={`text-sm ${selected ? 'text-gray-600 font-medium' : 'text-black font-medium'}`}>
+          {selected || 'Select profile'}
         </span>
         <ChevronsUpDown className="absolute size-6 right-3 text-gray-400" />
       </div>

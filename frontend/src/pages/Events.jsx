@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import TimezoneDropDown from "../components/TimezoneDropdown";
-import { Calendar, Clock, FileText, SquarePen, Users } from "lucide-react";
+import React, { useEffect, useState } from 'react';
+import TimezoneDropDown from '../components/TimezoneDropdown';
+import { Calendar, Clock, FileText, SquarePen, Users } from 'lucide-react';
 
 const Events = () => {
-  const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [timezone, setTimezone] = useState('Asia/Kolkata');
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -14,17 +14,11 @@ const Events = () => {
   function convertDateTimeToTimezone(date, time, fromZone, toZone) {
     if (!date || !time) return { newDate: date, newTime: time };
 
-    const combined = dayjs
-      .tz(
-        `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
-        "YYYY-MM-DD HH:mm",
-        fromZone
-      )
-      .tz(toZone);
+    const combined = dayjs.tz(`${dayjs(date).format('YYYY-MM-DD')} ${time}`, 'YYYY-MM-DD HH:mm', fromZone).tz(toZone);
 
-    console.log("data ----------------->", {
+    console.log('data ----------------->', {
       newDate: combined.toDate(),
-      newTime: combined.format("HH:mm"),
+      newTime: combined.format('HH:mm'),
     });
 
     return {
@@ -38,23 +32,13 @@ const Events = () => {
     if (!timezone) return;
 
     if (startDate && startTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(
-        startDate,
-        startTime,
-        dayjs.tz.guess(),
-        timezone
-      );
+      const { newDate, newTime } = convertDateTimeToTimezone(startDate, startTime, dayjs.tz.guess(), timezone);
       setStartDate(newDate);
       setStartTime(newTime);
     }
 
     if (endDate && endTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(
-        endDate,
-        endTime,
-        dayjs.tz.guess(),
-        timezone
-      );
+      const { newDate, newTime } = convertDateTimeToTimezone(endDate, endTime, dayjs.tz.guess(), timezone);
       setEndDate(newDate);
       setEndTime(newTime);
     }
@@ -72,9 +56,7 @@ const Events = () => {
             <div className="h-2/3">
               <div className="flex items-center justify-start">
                 <Users className="size-4 text-purple-500 text-base font-semibold" />
-                <p className="text-sm text-black font-semibold ml-3">
-                  user1, user2
-                </p>
+                <p className="text-sm text-black font-semibold ml-3">user1, user2</p>
               </div>
               <div className="mt-4 flex items-center">
                 <div>
@@ -82,15 +64,11 @@ const Events = () => {
                 </div>
                 <div className="flex flex-col justify-center ml-3 gap-1">
                   <p className="text-sm font-medium">
-                    Start:{" "}
-                    <span className="text-black text-sm font-semibold ml-1">
-                      Oct 14, 2025
-                    </span>{" "}
+                    Start: <span className="text-black text-sm font-semibold ml-1">Oct 14, 2025</span>{' '}
                   </p>
                   <p className="text-gray-400 text-sm font-medium flex items-center gap-2">
-                    {" "}
-                    <Clock className="size-4 text-gray-400" />{" "}
-                    <span> 11:30 PM</span>
+                    {' '}
+                    <Clock className="size-4 text-gray-400" /> <span> 11:30 PM</span>
                   </p>
                 </div>
               </div>
@@ -100,15 +78,11 @@ const Events = () => {
                 </div>
                 <div className="flex flex-col justify-center ml-3 gap-1">
                   <p className="text-sm font-medium">
-                    End:{" "}
-                    <span className="text-black text-sm font-semibold ml-1">
-                      Oct 14, 2025
-                    </span>{" "}
+                    End: <span className="text-black text-sm font-semibold ml-1">Oct 14, 2025</span>{' '}
                   </p>
                   <p className="text-gray-400 text-sm font-medium flex items-center gap-2">
-                    {" "}
-                    <Clock className="size-4 text-gray-400" />{" "}
-                    <span> 11:30 PM</span>
+                    {' '}
+                    <Clock className="size-4 text-gray-400" /> <span> 11:30 PM</span>
                   </p>
                 </div>
               </div>
@@ -117,12 +91,8 @@ const Events = () => {
               <div className="border border-gray-200/85 shadow-xl mt-5 w-full" />
 
               <div className="mt-4 flex flex-col gap-1">
-                <p className="text-gray-400 text-sm font-semibold">
-                  Created: Oct 11 at 03:56 PM
-                </p>
-                <p className="text-gray-400 text-sm font-semibold">
-                  Updated: Oct 11 at 03:56 PM
-                </p>
+                <p className="text-gray-400 text-sm font-semibold">Created: Oct 11 at 03:56 PM</p>
+                <p className="text-gray-400 text-sm font-semibold">Updated: Oct 11 at 03:56 PM</p>
               </div>
 
               <div className="border border-gray-200/85  shadow-xl mt-3 w-full" />

@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Calendar, Clock, Plus } from "lucide-react";
-import ProfileDropdown from "../components/ProfileDropdown";
-import TimezoneDropDown from "../components/TimezoneDropdown";
-import DatePicker from "../components/DatePicker";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import TimePickerCustom from "../components/TimePickerCustom";
+import React, { useEffect, useRef, useState } from 'react';
+import { Calendar, Clock, Plus } from 'lucide-react';
+import ProfileDropdown from '../components/ProfileDropdown';
+import TimezoneDropDown from '../components/TimezoneDropdown';
+import DatePicker from '../components/DatePicker';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import TimePickerCustom from '../components/TimePickerCustom';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const CreateEventForm = () => {
-  const [timezone, setTimezone] = useState("Asia/Kolkata");
+  const [timezone, setTimezone] = useState('Asia/Kolkata');
 
   const [openDropdown, setOpenDropdown] = useState(null);
 
@@ -31,17 +31,11 @@ const CreateEventForm = () => {
   function convertDateTimeToTimezone(date, time, fromZone, toZone) {
     if (!date || !time) return { newDate: date, newTime: time };
 
-    const combined = dayjs
-      .tz(
-        `${dayjs(date).format("YYYY-MM-DD")} ${time}`,
-        "YYYY-MM-DD HH:mm",
-        fromZone
-      )
-      .tz(toZone);
+    const combined = dayjs.tz(`${dayjs(date).format('YYYY-MM-DD')} ${time}`, 'YYYY-MM-DD HH:mm', fromZone).tz(toZone);
 
-    console.log("data ----------------->", {
+    console.log('data ----------------->', {
       newDate: combined.toDate(),
-      newTime: combined.format("HH:mm"),
+      newTime: combined.format('HH:mm'),
     });
 
     return {
@@ -55,23 +49,13 @@ const CreateEventForm = () => {
     if (!timezone) return;
 
     if (startDate && startTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(
-        startDate,
-        startTime,
-        dayjs.tz.guess(),
-        timezone
-      );
+      const { newDate, newTime } = convertDateTimeToTimezone(startDate, startTime, dayjs.tz.guess(), timezone);
       setStartDate(newDate);
       setStartTime(newTime);
     }
 
     if (endDate && endTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(
-        endDate,
-        endTime,
-        dayjs.tz.guess(),
-        timezone
-      );
+      const { newDate, newTime } = convertDateTimeToTimezone(endDate, endTime, dayjs.tz.guess(), timezone);
       setEndDate(newDate);
       setEndTime(newTime);
     }
@@ -80,42 +64,26 @@ const CreateEventForm = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       setTimeout(() => {
-        if (
-          startDateRef.current &&
-          !startDateRef.current.contains(event.target) &&
-          openDropdown === "startDate"
-        ) {
+        if (startDateRef.current && !startDateRef.current.contains(event.target) && openDropdown === 'startDate') {
           setOpenDropdown(null);
         }
 
-        if (
-          endDateRef.current &&
-          !endDateRef.current.contains(event.target) &&
-          openDropdown === "endDate"
-        ) {
+        if (endDateRef.current && !endDateRef.current.contains(event.target) && openDropdown === 'endDate') {
           setOpenDropdown(null);
         }
 
-        if (
-          startTimeRef.current &&
-          !startTimeRef.current.contains(event.target) &&
-          openDropdown === "startTime"
-        ) {
+        if (startTimeRef.current && !startTimeRef.current.contains(event.target) && openDropdown === 'startTime') {
           setOpenDropdown(null);
         }
 
-        if (
-          endTimeRef.current &&
-          !endTimeRef.current.contains(event.target) &&
-          openDropdown === "endTime"
-        ) {
+        if (endTimeRef.current && !endTimeRef.current.contains(event.target) && openDropdown === 'endTime') {
           setOpenDropdown(null);
         }
       }, 0);
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -142,20 +110,16 @@ const CreateEventForm = () => {
           <div
             className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
-              setOpenDropdown(
-                openDropdown === "startDate" ? null : "startDate"
-              );
+              setOpenDropdown(openDropdown === 'startDate' ? null : 'startDate');
             }}
             ref={startDateRef}
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {startDate
-                ? dayjs(startDate).tz(timezone).format("YYYY-MM-DD")
-                : "Pick a date"}
+              {startDate ? dayjs(startDate).tz(timezone).format('YYYY-MM-DD') : 'Pick a date'}
             </p>
 
-            {openDropdown === "startDate" && (
+            {openDropdown === 'startDate' && (
               <DatePicker
                 onDateChange={(date) => {
                   // setStartDate(date);
@@ -169,24 +133,16 @@ const CreateEventForm = () => {
           <div className="flex items-center w-1/3 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
             <div
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
-              onClick={() =>
-                setOpenDropdown(
-                  openDropdown === "startTime" ? null : "startTime"
-                )
-              }
+              onClick={() => setOpenDropdown(openDropdown === 'startTime' ? null : 'startTime')}
             >
               <p className="text-sm text-gray-600 font-medium">
-                {startTime ? dayjs(startTime).format("hh:mm A") : "Select time"}
+                {startTime ? dayjs(startTime).format('hh:mm A') : 'Select time'}
               </p>
               <Clock size={18} className="text-gray-500" />
             </div>
 
-            {openDropdown === "startTime" && (
-              <div
-                ref={startTimeRef}
-                className="absolute right-1 bottom-11 z-50"
-                onClick={(e) => e.stopPropagation()}
-              >
+            {openDropdown === 'startTime' && (
+              <div ref={startTimeRef} className="absolute right-1 bottom-11 z-50" onClick={(e) => e.stopPropagation()}>
                 <TimePickerCustom
                   value={startTime}
                   onChange={(newValue) => {
@@ -205,18 +161,16 @@ const CreateEventForm = () => {
           <div
             className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
-              setOpenDropdown(openDropdown === "endDate" ? null : "endDate");
+              setOpenDropdown(openDropdown === 'endDate' ? null : 'endDate');
             }}
             ref={endDateRef}
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {endDate
-                ? dayjs(endDate).tz(timezone).format("YYYY-MM-DD")
-                : "Pick a date"}
+              {endDate ? dayjs(endDate).tz(timezone).format('YYYY-MM-DD') : 'Pick a date'}
             </p>
 
-            {openDropdown === "endDate" && (
+            {openDropdown === 'endDate' && (
               <DatePicker
                 onDateChange={(date) => {
                   setEndDate(dayjs(date));
@@ -231,21 +185,17 @@ const CreateEventForm = () => {
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                setOpenDropdown(openDropdown === "endTime" ? null : "endTime");
+                setOpenDropdown(openDropdown === 'endTime' ? null : 'endTime');
               }}
             >
               <p className="text-sm text-gray-600 font-medium">
-                {endTime ? dayjs(endTime).format("hh:mm A") : "Select time"}
+                {endTime ? dayjs(endTime).format('hh:mm A') : 'Select time'}
               </p>
               <Clock size={18} className="text-gray-500" />
             </div>
 
-            {openDropdown === "endTime" && (
-              <div
-                ref={endTimeRef}
-                className="absolute right-1  bottom-11  z-50"
-                onClick={(e) => e.stopPropagation()}
-              >
+            {openDropdown === 'endTime' && (
+              <div ref={endTimeRef} className="absolute right-1  bottom-11  z-50" onClick={(e) => e.stopPropagation()}>
                 <TimePickerCustom
                   value={endTime}
                   onChange={(newValue) => {

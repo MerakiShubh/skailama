@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const DatePicker = ({ onDateChange, minDate }) => {
   const today = new Date();
@@ -56,18 +56,18 @@ const DatePicker = ({ onDateChange, minDate }) => {
   };
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   // const isDateDisabled = (day) => {
@@ -96,26 +96,20 @@ const DatePicker = ({ onDateChange, minDate }) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <button
-          onClick={handlePrevMonth}
-          className="text-gray-600 hover:text-purple-500"
-        >
+        <button onClick={handlePrevMonth} className="text-gray-600 hover:text-purple-500">
           &lt;
         </button>
         <h2 className="text-sm font-bold text-gray-800">
           {monthNames[currentMonth]} {currentYear}
         </h2>
-        <button
-          onClick={handleNextMonth}
-          className="text-gray-600 hover:text-purple-500"
-        >
+        <button onClick={handleNextMonth} className="text-gray-600 hover:text-purple-500">
           &gt;
         </button>
       </div>
 
       {/* Weekdays */}
       <div className="grid grid-cols-7 text-center text-xs font-medium text-gray-500 uppercase mb-2">
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((d) => (
           <div key={d}>{d}</div>
         ))}
       </div>
@@ -142,10 +136,10 @@ const DatePicker = ({ onDateChange, minDate }) => {
               className={`py-2 rounded-lg text-xs transition-all duration-150
                 ${
                   isDisabled
-                    ? "text-gray-400 cursor-not-allowed bg-gray-100"
+                    ? 'text-gray-400 cursor-not-allowed bg-gray-100'
                     : isSelected
-                    ? "bg-purple-500 text-white font-semibold"
-                    : "text-gray-700 hover:bg-blue-50 cursor-pointer"
+                    ? 'bg-purple-500 text-white font-semibold'
+                    : 'text-gray-700 hover:bg-blue-50 cursor-pointer'
                 }
               `}
               onClick={() => !isDisabled && handleDateClick(day)}

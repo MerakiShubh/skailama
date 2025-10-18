@@ -1,17 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 
 const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
 const MINUTES = Array.from({ length: 60 }, (_, i) => i);
 const itemHeight = 36;
 
-const TimePickerCustom = ({
-  value = new Date(),
-  onChange,
-  hourStep = 1,
-  minuteStep = 1,
-  className = "",
-  onClose,
-}) => {
+const TimePickerCustom = ({ value = new Date(), onChange, hourStep = 1, minuteStep = 1, className = '', onClose }) => {
   const setRef = useRef(null);
 
   const normalizeToDate = (val) => {
@@ -22,19 +15,19 @@ const TimePickerCustom = ({
 
       if (val instanceof Date && !isNaN(val)) return val;
 
-      if (typeof val === "string" || typeof val === "number") {
+      if (typeof val === 'string' || typeof val === 'number') {
         const d = new Date(val);
         if (!isNaN(d)) return d;
       }
     } catch (err) {
-      console.warn("Invalid time value received:", val, err);
+      console.warn('Invalid time value received:', val, err);
     }
     return new Date();
   };
 
   const to12Hour = (dateObj) => {
     if (!(dateObj instanceof Date) || isNaN(dateObj)) {
-      console.warn("Invalid date passed to to12Hour:", dateObj);
+      console.warn('Invalid date passed to to12Hour:', dateObj);
       dateObj = new Date();
     }
 
@@ -44,22 +37,16 @@ const TimePickerCustom = ({
     return {
       hour: hour12,
       minute: dateObj.getMinutes(),
-      meridiem: isAM ? "AM" : "PM",
+      meridiem: isAM ? 'AM' : 'PM',
     };
   };
 
   const date = normalizeToDate(value);
 
-  const {
-    hour: initialHour,
-    minute: initialMinute,
-    meridiem: initialMeridiem,
-  } = to12Hour(date);
+  const { hour: initialHour, minute: initialMinute, meridiem: initialMeridiem } = to12Hour(date);
 
   const [hour, setHour] = useState(initialHour);
-  const [minute, setMinute] = useState(
-    Math.round(initialMinute / minuteStep) * minuteStep
-  );
+  const [minute, setMinute] = useState(Math.round(initialMinute / minuteStep) * minuteStep);
   const [meridiem, setMeridiem] = useState(initialMeridiem);
 
   const hourRef = useRef(null);
@@ -67,11 +54,7 @@ const TimePickerCustom = ({
   const meridiemRef = useRef(null);
 
   useEffect(() => {
-    const {
-      hour: h,
-      minute: m,
-      meridiem: mm,
-    } = to12Hour(normalizeToDate(value));
+    const { hour: h, minute: m, meridiem: mm } = to12Hour(normalizeToDate(value));
     setHour(h);
     setMinute(Math.round(m / minuteStep) * minuteStep);
     setMeridiem(mm);
@@ -80,7 +63,7 @@ const TimePickerCustom = ({
   const buildDateFromSelection = (selHour, selMinute, selMeridiem) => {
     const out = normalizeToDate(value);
     let h = selHour % 12;
-    if (selMeridiem === "PM") h += 12;
+    if (selMeridiem === 'PM') h += 12;
     out.setHours(h, selMinute, 0, 0);
     return out;
   };
@@ -88,36 +71,29 @@ const TimePickerCustom = ({
   const scrollToSelected = (ref, index) => {
     if (!ref?.current) return;
     const container = ref.current;
-    const top =
-      index * itemHeight - container.clientHeight / 2 + itemHeight / 2;
-    container.scrollTo({ top, behavior: "smooth" });
+    const top = index * itemHeight - container.clientHeight / 2 + itemHeight / 2;
+    container.scrollTo({ top, behavior: 'smooth' });
   };
 
   useEffect(() => scrollToSelected(hourRef, HOURS.indexOf(hour)), [hour]);
-  useEffect(
-    () => scrollToSelected(minuteRef, Math.round(minute / minuteStep)),
-    [minute, minuteStep]
-  );
-  useEffect(
-    () => scrollToSelected(meridiemRef, meridiem === "AM" ? 0 : 1),
-    [meridiem]
-  );
+  useEffect(() => scrollToSelected(minuteRef, Math.round(minute / minuteStep)), [minute, minuteStep]);
+  useEffect(() => scrollToSelected(meridiemRef, meridiem === 'AM' ? 0 : 1), [meridiem]);
 
   const handleKey = (whichColumn, e) => {
-    if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault();
-      const dir = e.key === "ArrowUp" ? -1 : 1;
-      if (whichColumn === "hour") {
+      const dir = e.key === 'ArrowUp' ? -1 : 1;
+      if (whichColumn === 'hour') {
         let idx = HOURS.indexOf(hour);
         idx = (idx + dir + HOURS.length) % HOURS.length;
         setHour(HOURS[idx]);
-      } else if (whichColumn === "minute") {
+      } else if (whichColumn === 'minute') {
         let idx = Math.round(minute / minuteStep);
         const steps = Math.round(60 / minuteStep);
         idx = (idx + dir + steps) % steps;
         setMinute(MINUTES[idx * minuteStep]);
       } else {
-        setMeridiem((m) => (m === "AM" ? "PM" : "AM"));
+        setMeridiem((m) => (m === 'AM' ? 'PM' : 'AM'));
       }
     }
   };
@@ -135,7 +111,7 @@ const TimePickerCustom = ({
           <div
             ref={hourRef}
             tabIndex={0}
-            onKeyDown={(e) => handleKey("hour", e)}
+            onKeyDown={(e) => handleKey('hour', e)}
             className="overflow-auto max-h-48 snap-y snap-mandatory w-full rounded-md border border-gray-100"
           >
             {HOURS.map((h) => (
@@ -145,8 +121,8 @@ const TimePickerCustom = ({
                 className={`h-9 flex items-center justify-center snap-start text-sm rounded transition
                   ${
                     h === hour
-                      ? "bg-purple-500 text-white font-semibold"
-                      : "text-gray-600 hover:bg-gray-50 cursor-pointer"
+                      ? 'bg-purple-500 text-white font-semibold'
+                      : 'text-gray-600 hover:bg-gray-50 cursor-pointer'
                   }`}
               >
                 {h}
@@ -160,29 +136,27 @@ const TimePickerCustom = ({
           <div
             ref={minuteRef}
             tabIndex={0}
-            onKeyDown={(e) => handleKey("minute", e)}
+            onKeyDown={(e) => handleKey('minute', e)}
             className="overflow-auto max-h-48 snap-y snap-mandatory w-full rounded-md border border-gray-100"
           >
-            {Array.from({ length: Math.round(60 / minuteStep) }).map(
-              (_, idx) => {
-                const m = MINUTES[idx * minuteStep];
-                const isSelected = m === minute;
-                return (
-                  <div
-                    key={m}
-                    onClick={() => setMinute(m)}
-                    className={`h-9 flex items-center justify-center snap-start text-sm rounded transition
+            {Array.from({ length: Math.round(60 / minuteStep) }).map((_, idx) => {
+              const m = MINUTES[idx * minuteStep];
+              const isSelected = m === minute;
+              return (
+                <div
+                  key={m}
+                  onClick={() => setMinute(m)}
+                  className={`h-9 flex items-center justify-center snap-start text-sm rounded transition
                       ${
                         isSelected
-                          ? "bg-purple-500 text-white font-semibold"
-                          : "text-gray-600 hover:bg-gray-50 cursor-pointer"
+                          ? 'bg-purple-500 text-white font-semibold'
+                          : 'text-gray-600 hover:bg-gray-50 cursor-pointer'
                       }`}
-                  >
-                    {formatMin(m)}
-                  </div>
-                );
-              }
-            )}
+                >
+                  {formatMin(m)}
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -191,18 +165,18 @@ const TimePickerCustom = ({
           <div
             ref={meridiemRef}
             tabIndex={0}
-            onKeyDown={(e) => handleKey("meridiem", e)}
+            onKeyDown={(e) => handleKey('meridiem', e)}
             className="overflow-auto max-h-48 snap-y snap-mandatory w-full rounded-md border border-gray-100"
           >
-            {["AM", "PM"].map((m) => (
+            {['AM', 'PM'].map((m) => (
               <div
                 key={m}
                 onClick={() => setMeridiem(m)}
                 className={`h-9 flex items-center justify-center snap-start text-sm rounded transition
                   ${
                     m === meridiem
-                      ? "bg-purple-500 text-white font-semibold"
-                      : "text-gray-600 hover:bg-gray-50 cursor-pointer"
+                      ? 'bg-purple-500 text-white font-semibold'
+                      : 'text-gray-600 hover:bg-gray-50 cursor-pointer'
                   }`}
               >
                 {m}
