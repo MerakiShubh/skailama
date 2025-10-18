@@ -91,7 +91,7 @@ const DatePicker = ({ onDateChange, minDate }) => {
 
   return (
     <div
-      className="w-full max-w-60 md:max-w-68 h-66 p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute left-0 bottom-11 lg:top-11 animate-fadeIn z-50"
+      className="w-full max-w-60 md:max-w-68 h-66 p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute left-0 bottom-11  animate-fadeIn z-50"
       // onClick={(e) => e.stopPropagation()}
     >
       {/* Header */}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Calendar, Clock } from "lucide-react";
+import { Calendar, Clock, Plus } from "lucide-react";
 import ProfileDropdown from "../components/ProfileDropdown";
 import TimezoneDropDown from "../components/TimezoneDropdown";
 import DatePicker from "../components/DatePicker";
@@ -14,17 +14,13 @@ dayjs.extend(timezone);
 const CreateEventForm = () => {
   const [timezone, setTimezone] = useState("Asia/Kolkata");
 
+  const [openDropdown, setOpenDropdown] = useState(null);
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
 
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-
-  const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
-  const [isEndDatePickerOpen, setIsEndDatePickerOpen] = useState(false);
-
-  const [isStartTimePickerOpen, setIsStartTimePickerOpen] = useState(false);
-  const [isEndTimePickerOpen, setIsEndTimePickerOpen] = useState(false);
 
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -86,23 +82,34 @@ const CreateEventForm = () => {
       setTimeout(() => {
         if (
           startDateRef.current &&
-          !startDateRef.current.contains(event.target)
+          !startDateRef.current.contains(event.target) &&
+          openDropdown === "startDate"
         ) {
-          setIsStartDatePickerOpen(false);
+          setOpenDropdown(null);
         }
-        if (endDateRef.current && !endDateRef.current.contains(event.target)) {
-          setIsEndDatePickerOpen(false);
+
+        if (
+          endDateRef.current &&
+          !endDateRef.current.contains(event.target) &&
+          openDropdown === "endDate"
+        ) {
+          setOpenDropdown(null);
         }
 
         if (
           startTimeRef.current &&
-          !startTimeRef.current.contains(event.target)
+          !startTimeRef.current.contains(event.target) &&
+          openDropdown === "startTime"
         ) {
-          setIsStartTimePickerOpen(false);
+          setOpenDropdown(null);
         }
 
-        if (endTimeRef.current && !endTimeRef.current.contains(event.target)) {
-          setIsEndTimePickerOpen(false);
+        if (
+          endTimeRef.current &&
+          !endTimeRef.current.contains(event.target) &&
+          openDropdown === "endTime"
+        ) {
+          setOpenDropdown(null);
         }
       }, 0);
     };
@@ -118,7 +125,7 @@ const CreateEventForm = () => {
   }, [startDate]);
 
   return (
-    <div className="w-full lg:w-1/2 h-1/2 md:h-full bg-white rounded-lg shadow-2xl">
+    <div className="w-full lg:w-1/2   bg-white rounded-lg shadow-2xl">
       <div className="p-6">
         <h2 className="font-medium text-xl text-black">Create Events</h2>
 
@@ -131,12 +138,13 @@ const CreateEventForm = () => {
         </div>
 
         <h1 className="font-medium text-sm mt-4">Start Date & Time</h1>
-        <div className="w-full flex justify-center items-center gap-2">
+        <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
             className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
-              setIsStartDatePickerOpen((prev) => !prev);
-              setIsStartTimePickerOpen(false);
+              setOpenDropdown(
+                openDropdown === "startDate" ? null : "startDate"
+              );
             }}
             ref={startDateRef}
           >
@@ -147,25 +155,25 @@ const CreateEventForm = () => {
                 : "Pick a date"}
             </p>
 
-            {isStartDatePickerOpen && (
+            {openDropdown === "startDate" && (
               <DatePicker
                 onDateChange={(date) => {
                   // setStartDate(date);
                   setStartDate(dayjs(date));
-                  setIsStartDatePickerOpen(false);
+                  setOpenDropdown(null);
                 }}
               />
             )}
           </div>
 
-          <div className="flex items-center w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
+          <div className="flex items-center w-1/3 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
             <div
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsStartTimePickerOpen((prev) => !prev);
-                setIsStartDatePickerOpen(false);
-              }}
+              onClick={() =>
+                setOpenDropdown(
+                  openDropdown === "startTime" ? null : "startTime"
+                )
+              }
             >
               <p className="text-sm text-gray-600 font-medium">
                 {startTime ? dayjs(startTime).format("hh:mm A") : "Select time"}
@@ -173,19 +181,19 @@ const CreateEventForm = () => {
               <Clock size={18} className="text-gray-500" />
             </div>
 
-            {isStartTimePickerOpen && (
+            {openDropdown === "startTime" && (
               <div
                 ref={startTimeRef}
-                className="absolute top-11 right-1 z-50"
+                className="absolute right-1 bottom-11 z-50"
                 onClick={(e) => e.stopPropagation()}
               >
                 <TimePickerCustom
                   value={startTime}
                   onChange={(newValue) => {
                     setStartTime(dayjs(newValue));
-                    setIsStartDatePickerOpen(false);
+                    setOpenDropdown(null);
                   }}
-                  onClose={() => setIsStartTimePickerOpen(false)}
+                  onClose={() => setOpenDropdown(null)}
                 />
               </div>
             )}
@@ -193,12 +201,11 @@ const CreateEventForm = () => {
         </div>
 
         <h1 className="font-medium text-sm mt-4">End Date & Time</h1>
-        <div className="w-full flex justify-center items-center gap-2">
+        <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
             className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
-              setIsEndDatePickerOpen((prev) => !prev);
-              setIsEndTimePickerOpen(false);
+              setOpenDropdown(openDropdown === "endDate" ? null : "endDate");
             }}
             ref={endDateRef}
           >
@@ -207,28 +214,24 @@ const CreateEventForm = () => {
               {endDate
                 ? dayjs(endDate).tz(timezone).format("YYYY-MM-DD")
                 : "Pick a date"}
-              {/* {endDate ? endDate.toDateString() : "Pick a date"} */}
             </p>
 
-            {isEndDatePickerOpen && (
+            {openDropdown === "endDate" && (
               <DatePicker
                 onDateChange={(date) => {
-                  // setEndDate(date);
                   setEndDate(dayjs(date));
-                  setIsEndDatePickerOpen(false);
+                  setOpenDropdown(null);
                 }}
-                minDate={startDate}
               />
             )}
           </div>
 
-          <div className="flex items-center w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
+          <div className="flex items-center w-1/3 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
             <div
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
-                setIsEndTimePickerOpen((prev) => !prev);
-                setIsEndDatePickerOpen(false);
+                setOpenDropdown(openDropdown === "endTime" ? null : "endTime");
               }}
             >
               <p className="text-sm text-gray-600 font-medium">
@@ -237,23 +240,33 @@ const CreateEventForm = () => {
               <Clock size={18} className="text-gray-500" />
             </div>
 
-            {isEndTimePickerOpen && (
+            {openDropdown === "endTime" && (
               <div
                 ref={endTimeRef}
-                className="absolute top-11 right-1 z-50"
+                className="absolute right-1  bottom-11  z-50"
                 onClick={(e) => e.stopPropagation()}
               >
                 <TimePickerCustom
                   value={endTime}
                   onChange={(newValue) => {
                     setEndTime(dayjs(newValue));
-                    setIsEndDatePickerOpen(false);
+                    setOpenDropdown(false);
                   }}
-                  onClose={() => setIsEndTimePickerOpen(false)}
+                  onClose={() => setOpenDropdown(false)}
                 />
               </div>
             )}
           </div>
+        </div>
+
+        <div className="mt-20 w-full flex justify-center lg:justify-start">
+          <button
+            type="button"
+            className="w-1/2 flex items-center justify-center gap-2 lg:w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm lg:text-base py-2.5 rounded-md transition-colors duration-200"
+          >
+            <Plus className="size-5" />
+            Create Event
+          </button>
         </div>
       </div>
     </div>

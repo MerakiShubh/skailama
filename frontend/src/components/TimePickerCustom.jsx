@@ -129,13 +129,6 @@ const TimePickerCustom = ({
       className={`w-64 p-3 bg-white border border-gray-200 rounded-lg shadow-sm z-50 ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
-      {/* <div className="mb-3 text-sm font-semibold text-gray-700 flex items-center justify-between">
-        <div>Time</div>
-        <div className="text-xs text-gray-500">
-          {hour}:{formatMin(minute)} {meridiem}
-        </div>
-      </div> */}
-
       <div className="flex gap-4 justify-center">
         <div className="flex flex-col items-center w-16">
           <div className="text-xs font-medium text-gray-500 mb-1">Hour</div>
