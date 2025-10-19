@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronsUpDown, Plus, Search } from 'lucide-react';
+import { useGetAllUsers, useCreateUser } from '../hooks/user.hook';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,15 +9,24 @@ export default function ProfileDropdown() {
   const [isAdding, setIsAdding] = useState(false);
   const [newUser, setNewUser] = useState('');
 
-  const [users, setUsers] = useState(['User1', 'User2', 'User3', 'User4', 'User5', 'User6']);
+  // const [users, setUsers] = useState(['User1', 'User2', 'User3', 'User4', 'User5', 'User6']);
 
-  const filtered = users.filter((user) => user.toLowerCase().includes(search.toLowerCase()));
+  const { data, isLoading, isError } = useGetAllUsers();
+  const users = data?.data || []; // assuming your ApiResponse structure has { success, data, message }
+
+  // ✅ Mutation for creating user
+  const { mutate: createUser, isPending: isCreating } = useCreateUser();
+
+  const filtered = users.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()));
 
   const handleAddUser = () => {
     if (newUser.trim() !== '') {
-      setUsers((prev) => [...prev, newUser.trim()]);
-      setNewUser('');
-      setIsAdding(false);
+      createUser(newUser.trim(), {
+        onSuccess: () => {
+          setNewUser('');
+          setIsAdding(false);
+        },
+      });
     }
   };
 
@@ -49,18 +59,26 @@ export default function ProfileDropdown() {
           </div>
 
           <div className="max-h-32 overflow-y-auto">
-            {filtered.map((user) => (
-              <div
-                key={user}
-                onClick={() => {
-                  setSelected(user);
-                  setIsOpen(false);
-                }}
-                className="px-4 py-2 text-sm hover:bg-purple-500/80 hover:text-white cursor-pointer"
-              >
-                {user}
-              </div>
-            ))}
+            {isLoading ? (
+              <div className="text-sm text-gray-500 p-2 text-center">Loading users...</div>
+            ) : isError ? (
+              <div className="text-sm text-red-500 p-2 text-center">Failed to fetch users</div>
+            ) : filtered.length === 0 ? (
+              <div className="text-sm text-gray-500 p-2 text-center">No users found</div>
+            ) : (
+              filtered.map((user) => (
+                <div
+                  key={user._id}
+                  onClick={() => {
+                    setSelected(user.name);
+                    setIsOpen(false);
+                  }}
+                  className="px-4 py-2 text-sm hover:bg-purple-500/80 hover:text-white cursor-pointer"
+                >
+                  {user.name}
+                </div>
+              ))
+            )}
           </div>
 
           <div className="border-t border-gray-300 bg-gray-50 flex items-center justify-center h-10 p-1">
@@ -82,9 +100,10 @@ export default function ProfileDropdown() {
                 />
                 <button
                   onClick={handleAddUser}
-                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600"
+                  disabled={isCreating}
+                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60"
                 >
-                  Add
+                  {isCreating ? 'Adding...' : 'Add'}
                 </button>
               </div>
             )}
