@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Check, ChevronsUpDown, Plus, Search } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Check, ChevronsUpDown, Plus, Search, Loader2 } from 'lucide-react';
 import { useGetAllUsers, useCreateUser } from '../hooks/user.hook';
 
-export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }) {
+export default function SelectProfileDropdown() {
+  const [selectedUser, setSelectedUser] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -38,30 +39,19 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
     }
   };
 
-  const toggleUserSelection = (user) => {
-    setSelectedUsers((prev) => {
-      if (prev.some((u) => u._id === user._id)) {
-        return prev.filter((u) => u._id !== user._id);
-      } else {
-        return [...prev, user];
-      }
-    });
+  const selectUser = (user) => {
+    setSelectedUser(user);
+    setIsOpen(false);
   };
 
   return (
     <div className="w-full mt-2 relative" ref={dropdownRef}>
-      {/* Dropdown Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
-        <span className="text-sm text-gray-600 font-medium">
-          <span className={`text-sm text-gray-600 font-medium`}>
-            {selectedUsers.length > 0
-              ? `${selectedUsers.length} profile${selectedUsers.length > 1 ? 's' : ''} selected`
-              : 'Select profile'}
-          </span>
-        </span>
+        <span className="text-sm text-gray-600 font-medium">{selectedUser ? selectedUser.name : 'Select profile'}</span>
+
         <ChevronsUpDown className="absolute size-6 right-3 text-gray-400" />
       </div>
 
@@ -82,18 +72,20 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
 
           <div className="max-h-32 overflow-y-auto">
             {isLoading ? (
-              <div className="text-sm text-gray-500 p-2 text-center">Loading users...</div>
+              <div className="text-sm text-gray-500 p-2 flex items-center justify-center gap-2">
+                <Loader2 className="animate-spin size-4 text-gray-500" /> Loading users...
+              </div>
             ) : isError ? (
               <div className="text-sm text-red-500 p-2 text-center">Failed to fetch users</div>
             ) : filtered.length === 0 ? (
               <div className="text-sm text-gray-500 p-2 text-center">No users found</div>
             ) : (
               filtered.map((user) => {
-                const isSelected = selectedUsers.some((u) => u._id === user._id);
+                const isSelected = selectedUser?._id === user._id;
                 return (
                   <div
                     key={user._id}
-                    onClick={() => toggleUserSelection(user)}
+                    onClick={() => selectUser(user)}
                     className="px-4 py-2 text-sm hover:bg-purple-500/80 hover:text-white cursor-pointer flex items-center gap-4"
                   >
                     {isSelected && <Check className="text-gray-500 size-4" />}
@@ -124,9 +116,15 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
                 <button
                   onClick={handleAddUser}
                   disabled={isCreating}
-                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60"
+                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60 flex items-center justify-center gap-1"
                 >
-                  {isCreating ? 'Adding...' : 'Add'}
+                  {isCreating ? (
+                    <>
+                      <Loader2 className="animate-spin size-4" /> Adding...
+                    </>
+                  ) : (
+                    'Add'
+                  )}
                 </button>
               </div>
             )}

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Calendar, Clock, Plus } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { Calendar, Clock, Loader2, Plus } from 'lucide-react';
 import ProfileDropdown from '../components/ProfileDropdown';
 import TimezoneDropDown from '../components/TimezoneDropdown';
 import DatePicker from '../components/DatePicker';
@@ -7,14 +8,18 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import TimePickerCustom from '../components/TimePickerCustom';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import { useCreateEvent } from '../hooks/event.hook';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+dayjs.extend(advancedFormat);
 
 const CreateEventForm = () => {
   const [timezone, setTimezone] = useState('Asia/Kolkata');
 
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -27,6 +32,8 @@ const CreateEventForm = () => {
 
   const startTimeRef = useRef(null);
   const endTimeRef = useRef(null);
+
+  const { mutate: createEvent, status, isSuccess, isError, error } = useCreateEvent();
 
   function convertDateTimeToTimezone(date, time, fromZone, toZone) {
     if (!date || !time) return { newDate: date, newTime: time };
@@ -44,6 +51,36 @@ const CreateEventForm = () => {
       newTime: combined,
     };
   }
+
+  const handleCreateEvent = () => {
+    if (!startDate || !endDate || !startTime || !endTime || selectedUsers.length === 0) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+
+    const payload = {
+      users: selectedUsers.map((u) => u._id),
+      timezone,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+    };
+
+    createEvent(payload, {
+      onSuccess: () => {
+        toast.success('Event created successfully!');
+        setSelectedUsers([]);
+        setStartDate(null);
+        setEndDate(null);
+        setStartTime(null);
+        setEndTime(null);
+      },
+      onError: (err) => {
+        toast.error(err.response?.data?.message || 'Failed to create event');
+      },
+    });
+  };
 
   useEffect(() => {
     if (!timezone) return;
@@ -99,7 +136,7 @@ const CreateEventForm = () => {
 
         <div className="mt-4">
           <h3 className="font-medium text-sm">Profiles</h3>
-          <ProfileDropdown />
+          <ProfileDropdown selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
 
           <h3 className="font-medium text-sm mt-4">Timezone</h3>
           <TimezoneDropDown selected={timezone} onSelect={setTimezone} />
@@ -116,7 +153,7 @@ const CreateEventForm = () => {
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {startDate ? dayjs(startDate).tz(timezone).format('YYYY-MM-DD') : 'Pick a date'}
+              {startDate ? dayjs(startDate).tz(timezone).format('MMMM Do, YYYY') : 'Pick a date'}
             </p>
 
             {openDropdown === 'startDate' && (
@@ -167,11 +204,12 @@ const CreateEventForm = () => {
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {endDate ? dayjs(endDate).tz(timezone).format('YYYY-MM-DD') : 'Pick a date'}
+              {endDate ? dayjs(endDate).tz(timezone).format('MMMM Do, YYYY') : 'Pick a date'}
             </p>
 
             {openDropdown === 'endDate' && (
               <DatePicker
+                minDate={startDate ? startDate.toDate() : null}
                 onDateChange={(date) => {
                   setEndDate(dayjs(date));
                   setOpenDropdown(null);
@@ -212,9 +250,13 @@ const CreateEventForm = () => {
         <div className="mt-14  w-full flex justify-center lg:justify-start">
           <button
             type="button"
-            className="w-1/2 flex items-center justify-center gap-2 lg:w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm lg:text-base py-2.5 rounded-md transition-colors duration-200"
+            onClick={handleCreateEvent}
+            className={`w-1/2 flex items-center justify-center gap-2 lg:w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold text-sm lg:text-base py-2.5 rounded-md transition-colors duration-200 ${
+              status === 'loading' ? 'opacity-60 cursor-not-allowed' : ''
+            }`}
+            disabled={status === 'loading'}
           >
-            <Plus className="size-5" />
+            {status === 'loading' ? <Loader2 className="animate-spin size-5" /> : <Plus className="size-5" />}
             Create Event
           </button>
         </div>

@@ -1,7 +1,8 @@
 import React from 'react';
 import CreateEventForm from '../pages/CreateEventForm';
 import Events from '../pages/Events';
-import ProfileDropdown from './ProfileDropdown';
+// import ProfileDropdown from './ProfileDropdown';
+import SelectProfileDropdown from './SelectProfileDropdown';
 
 const Container = () => {
   return (
@@ -14,7 +15,9 @@ const Container = () => {
           </div>
           <div className="w-50">
             {' '}
-            <ProfileDropdown />{' '}
+            {/* <ProfileDropdown />{' '}
+             */}
+            <SelectProfileDropdown />
           </div>
         </div>
 
