@@ -13,6 +13,7 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsAdding(false);
         setIsOpen(false);
       }
     };
@@ -113,18 +114,18 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
                 <Plus className="size-3" /> Add User
               </button>
             ) : (
-              <div className="flex w-full gap-1 px-2">
+              <div className="flex w-full gap-1 px-1">
                 <input
                   type="text"
                   placeholder="Enter name"
-                  className="w-2/3 text-sm border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  className="w-4/5 text-sm border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500"
                   value={newUser}
                   onChange={(e) => setNewUser(e.target.value)}
                 />
                 <button
                   onClick={handleAddUser}
                   disabled={isCreating}
-                  className="w-1/3 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60"
+                  className="w-1/5 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60"
                 >
                   {isCreating ? 'Adding...' : 'Add'}
                 </button>

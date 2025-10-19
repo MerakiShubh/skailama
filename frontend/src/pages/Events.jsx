@@ -6,6 +6,8 @@ import TimezoneDropDown from '../components/TimezoneDropdown';
 import { Calendar, Clock, FileText, SquarePen, Users, Loader2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { useGetAllEvents } from '../hooks/event.hook';
+import EditEventModal from './EditEventModal';
+import EventLogsModal from './EventLogsModal';
 
 dayjs.extend(utc);
 dayjs.extend(timezonePlugin);
@@ -14,19 +16,19 @@ const Events = () => {
   const [timezone, setTimezone] = useState('Asia/Kolkata');
   const selectedUser = useSelector((state) => state.user.selectedUser);
 
-  // Fetch events only if user is selected
+  const [editingEvent, setEditingEvent] = useState(null);
+
   const { data, isLoading, isError } = useGetAllEvents(selectedUser?._id, {
     enabled: !!selectedUser?._id,
   });
 
-  // const convertDateTimeToTimezone = (date, time, fromZone, toZone) => {
-  //   if (!date || !time) return { newDate: date, newTime: time };
-  //   const combined = dayjs.tz(`${date} ${time}`, 'YYYY-MM-DD HH:mm', fromZone).tz(toZone);
-  //   return {
-  //     newDate: combined.format('MMM DD, YYYY'),
-  //     newTime: combined.format('hh:mm A'),
-  //   };
-  // };
+  const [showLogs, setShowLogs] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+
+  const handleViewLogs = (id) => {
+    setSelectedEventId(id);
+    setShowLogs(true);
+  };
 
   const convertDateTimeToTimezone = (date, time, fromZone, toZone) => {
     if (!date || !time) return { newDate: date, newTime: time };
@@ -34,9 +36,9 @@ const Events = () => {
     const combined = dayjs.tz(`${date} ${time}`, 'YYYY-MM-DD HH:mm', fromZone).tz(toZone);
 
     return {
-      newDate: combined.format('MMM DD, YYYY'), // display date in selected timezone
-      newTime: combined.format('hh:mm A'), // display time in selected timezone
-      dateObj: combined.toDate(), // optional: JS Date object if needed
+      newDate: combined.format('MMM DD, YYYY'),
+      newTime: combined.format('hh:mm A'),
+      dateObj: combined.toDate(),
     };
   };
 
@@ -118,15 +120,23 @@ const Events = () => {
                   <div className="border border-gray-200/85 shadow-xl mt-3 w-full" />
 
                   <div className="w-full flex flex-col lg:flex-row gap-3 lg:gap-4 mt-4">
-                    <button className="flex items-center justify-center gap-2 w-full lg:w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-md transition-colors duration-200">
+                    <button
+                      className="flex items-center justify-center gap-2 w-full lg:w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-md transition-colors duration-200"
+                      onClick={() => setEditingEvent(event)}
+                    >
                       <SquarePen className="size-4 text-gray-800" />
                       Edit
                     </button>
+                    {editingEvent && <EditEventModal event={editingEvent} onClose={() => setEditingEvent(null)} />}
 
-                    <button className="flex items-center justify-center gap-2 w-full lg:w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-md transition-colors duration-200">
+                    <button
+                      className="flex items-center justify-center gap-2 w-full lg:w-1/2 bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 rounded-md transition-colors duration-200"
+                      onClick={() => handleViewLogs(event._id)}
+                    >
                       <FileText className="size-4 text-gray-800" />
                       View Logs
                     </button>
+                    {showLogs && <EventLogsModal eventId={selectedEventId} onClose={() => setShowLogs(false)} />}
                   </div>
                 </div>
               );
