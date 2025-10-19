@@ -20,4 +20,10 @@ app.use((req, res, next) => {
   next();
 });
 
+import userRoutes from './routes/user.routes.js';
+import eventRoutes from './routes/event.routes.js';
+
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/events', eventRoutes);
+
 export { app };
