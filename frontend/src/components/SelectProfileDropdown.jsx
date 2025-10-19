@@ -1,15 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check, ChevronsUpDown, Plus, Search, Loader2 } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSelectedUser } from '../store/userSlice';
 import { useGetAllUsers, useCreateUser } from '../hooks/user.hook';
 
 export default function SelectProfileDropdown() {
-  const [selectedUser, setSelectedUser] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isAdding, setIsAdding] = useState(false);
   const [newUser, setNewUser] = useState('');
 
   const dropdownRef = useRef(null);
+
+  const dispatch = useDispatch();
+  const selectedUser = useSelector((state) => state.user.selectedUser);
+
+  const selectUser = (user) => {
+    dispatch(setSelectedUser(user));
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,11 +46,6 @@ export default function SelectProfileDropdown() {
         },
       });
     }
-  };
-
-  const selectUser = (user) => {
-    setSelectedUser(user);
-    setIsOpen(false);
   };
 
   return (
