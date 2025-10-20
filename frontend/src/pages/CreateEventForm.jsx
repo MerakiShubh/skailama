@@ -35,36 +35,31 @@ const CreateEventForm = () => {
 
   const { mutate: createEvent, status, isSuccess, isError, error } = useCreateEvent();
 
-  function convertDateTimeToTimezone(date, time, fromZone, toZone) {
-    if (!date || !time) return { newDate: date, newTime: time };
-
-    const combined = dayjs.tz(`${dayjs(date).format('YYYY-MM-DD')} ${time}`, 'YYYY-MM-DD HH:mm', fromZone).tz(toZone);
-
-    console.log('data ----------------->', {
-      newDate: combined.toDate(),
-      newTime: combined.format('HH:mm'),
-    });
-
-    return {
-      // newDate: combined.toDate(),
-      newDate: combined,
-      newTime: combined,
-    };
-  }
-
   const handleCreateEvent = () => {
     if (!startDate || !endDate || !startTime || !endTime || selectedUsers.length === 0) {
       toast.error('Please fill all required fields');
       return;
     }
 
+    const startDateTime = dayjs.tz(
+      `${dayjs(startDate).format('YYYY-MM-DD')} ${dayjs(startTime).format('HH:mm')}`,
+      'YYYY-MM-DD HH:mm',
+      timezone
+    );
+
+    const endDateTime = dayjs.tz(
+      `${dayjs(endDate).format('YYYY-MM-DD')} ${dayjs(endTime).format('HH:mm')}`,
+      'YYYY-MM-DD HH:mm',
+      timezone
+    );
+
     const payload = {
       users: selectedUsers.map((u) => u._id),
       timezone,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
+      startDate: startDateTime.format('YYYY-MM-DD'),
+      startTime: startDateTime.format('hh:mm A'),
+      endDate: endDateTime.format('YYYY-MM-DD'),
+      endTime: endDateTime.format('hh:mm A'),
     };
 
     createEvent(payload, {
@@ -81,22 +76,6 @@ const CreateEventForm = () => {
       },
     });
   };
-
-  useEffect(() => {
-    if (!timezone) return;
-
-    if (startDate && startTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(startDate, startTime, dayjs.tz.guess(), timezone);
-      setStartDate(newDate);
-      setStartTime(newTime);
-    }
-
-    if (endDate && endTime) {
-      const { newDate, newTime } = convertDateTimeToTimezone(endDate, endTime, dayjs.tz.guess(), timezone);
-      setEndDate(newDate);
-      setEndTime(newTime);
-    }
-  }, [timezone]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -130,7 +109,7 @@ const CreateEventForm = () => {
   }, [startDate]);
 
   return (
-    <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-2xl">
+    <div className="w-full lg:w-1/2 bg-white rounded-lg shadow-2xl flex-1">
       <div className="p-6">
         <h2 className="font-medium text-xl text-black">Create Events</h2>
 
@@ -145,7 +124,7 @@ const CreateEventForm = () => {
         <h1 className="font-medium text-sm mt-4">Start Date & Time</h1>
         <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
-            className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
+            className="flex items-center w-3/4 bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
               setOpenDropdown(openDropdown === 'startDate' ? null : 'startDate');
             }}
@@ -153,7 +132,7 @@ const CreateEventForm = () => {
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {startDate ? dayjs(startDate).tz(timezone).format('MMMM Do, YYYY') : 'Pick a date'}
+              {startDate ? dayjs(startDate).format('MMMM Do, YYYY') : 'Pick a date'}
             </p>
 
             {openDropdown === 'startDate' && (
@@ -196,7 +175,7 @@ const CreateEventForm = () => {
         <h1 className="font-medium text-sm mt-4">End Date & Time</h1>
         <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
-            className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
+            className="flex items-center w-3/4 bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => {
               setOpenDropdown(openDropdown === 'endDate' ? null : 'endDate');
             }}
@@ -204,7 +183,7 @@ const CreateEventForm = () => {
           >
             <Calendar className="ml-4 size-5 text-gray-400" />
             <p className="ml-4 text-sm text-gray-600 font-medium">
-              {endDate ? dayjs(endDate).tz(timezone).format('MMMM Do, YYYY') : 'Pick a date'}
+              {endDate ? dayjs(endDate).format('MMMM Do, YYYY') : 'Pick a date'}
             </p>
 
             {openDropdown === 'endDate' && (

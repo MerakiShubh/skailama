@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { useState } from 'react';
 
 const DatePicker = ({ onDateChange, minDate }) => {
@@ -31,28 +32,17 @@ const DatePicker = ({ onDateChange, minDate }) => {
     }
   };
 
-  // const handleDateClick = (day) => {
-  //   const newDate = new Date(currentYear, currentMonth, day);
-  //   // Block clicks before minDate
-  //   if (minDate && newDate < new Date(minDate.setHours(0, 0, 0, 0))) return;
-  //   setSelectedDate(newDate);
-  //   onDateChange?.(newDate);
-  // };
   const handleDateClick = (day) => {
-    const newDate = new Date(currentYear, currentMonth, day);
+    console.log('date picked--------------->', day);
+    const newDate = new Date(Date.UTC(currentYear, currentMonth, day));
+    console.log('new DAte ---------__>', newDate);
 
-    if (minDate) {
-      // Convert Day.js -> Date if needed
-      const minDateObj = minDate.$d ? minDate.toDate() : minDate;
-      const normalizedMin = new Date(minDateObj);
-      normalizedMin.setHours(0, 0, 0, 0);
-
-      // Prevent selecting dates before minDate
-      if (newDate < normalizedMin) return;
-    }
+    if (minDate && newDate < new Date(minDate.setHours(0, 0, 0, 0))) return;
 
     setSelectedDate(newDate);
+    console.log('new date after selected date', newDate);
     onDateChange?.(newDate);
+    console.log('new date after ondatechange', newDate);
   };
 
   const monthNames = [
@@ -70,18 +60,10 @@ const DatePicker = ({ onDateChange, minDate }) => {
     'December',
   ];
 
-  // const isDateDisabled = (day) => {
-  //   if (!minDate) return false;
-  //   const date = new Date(currentYear, currentMonth, day);
-  //   return date < new Date(minDate.setHours(0, 0, 0, 0));
-  // };
-
   const isDateDisabled = (day) => {
     if (!minDate) return false;
 
     const date = new Date(currentYear, currentMonth, day);
-
-    // Convert Day.js -> Date if needed
     const minDateObj = minDate.$d ? minDate.toDate() : minDate;
     const normalizedMin = new Date(minDateObj);
     normalizedMin.setHours(0, 0, 0, 0);
@@ -94,7 +76,6 @@ const DatePicker = ({ onDateChange, minDate }) => {
       className="w-full max-w-60 md:max-w-68 h-66 p-4 bg-white border border-gray-200 rounded-lg shadow-sm absolute left-0 bottom-11  animate-fadeIn z-50"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <button onClick={handlePrevMonth} className="text-gray-600 hover:text-purple-500">
           &lt;
@@ -114,7 +95,6 @@ const DatePicker = ({ onDateChange, minDate }) => {
         ))}
       </div>
 
-      {/* Days grid */}
       <div className="grid grid-cols-7 text-center gap-1">
         {days.map((day, index) => {
           if (!day)

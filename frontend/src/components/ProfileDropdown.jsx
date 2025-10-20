@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Check, ChevronsUpDown, Plus, Search } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2, Plus, Search } from 'lucide-react';
 import { useGetAllUsers, useCreateUser } from '../hooks/user.hook';
 
 export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }) {
@@ -51,10 +51,9 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
 
   return (
     <div className="w-full mt-2 relative" ref={dropdownRef}>
-      {/* Dropdown Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
+        className="flex items-center bg-gray-200/70 hover:bg-purple-500/90  rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
         <span className="text-sm text-gray-600 font-medium">
           <span className={`text-sm text-gray-600 font-medium`}>
@@ -125,9 +124,9 @@ export default function ProfileDropdown({ selectedUsers = [], setSelectedUsers }
                 <button
                   onClick={handleAddUser}
                   disabled={isCreating}
-                  className="w-1/5 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60"
+                  className="w-1/5 bg-purple-500 text-white rounded-md text-sm font-medium hover:bg-purple-600 disabled:opacity-60 flex justify-center items-center"
                 >
-                  {isCreating ? 'Adding...' : 'Add'}
+                  {isCreating ? <Loader2 className="animate-spin size-4 text-white" /> : <span>Add</span>}
                 </button>
               </div>
             )}

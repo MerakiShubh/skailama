@@ -52,87 +52,97 @@ const getAllEvents = asyncHandler(async (req, res) => {
 });
 
 const updateEvent = asyncHandler(async (req, res) => {
-  const { eventId, updates, clientUpdatedAt } = req.body;
+  try {
+    const { eventId, updates, clientUpdatedAt } = req.body;
 
-  if (!eventId || !updates) {
-    throw new ApiError(400, 'Event ID and updates are required');
-  }
-
-  const oldEvent = await Event.findById(eventId);
-  if (!oldEvent) {
-    throw new ApiError(404, 'Event not found');
-  }
-
-  const updatedEvent = await Event.findByIdAndUpdate(eventId, updates, {
-    new: true,
-  }).populate('users', 'name');
-
-  let messageParts = [];
-
-  if (
-    updates.users &&
-    JSON.stringify(updates.users.sort()) !== JSON.stringify(oldEvent.users.map((id) => id.toString()).sort())
-  ) {
-    const newUserIds = updates.users.map((id) => id.toString());
-    const oldUserIds = oldEvent.users.map((id) => id.toString());
-
-    const usersToAdd = newUserIds.filter((id) => !oldUserIds.includes(id));
-    const usersToRemove = oldUserIds.filter((id) => !newUserIds.includes(id));
-
-    if (usersToAdd.length > 0) {
-      await User.updateMany({ _id: { $in: usersToAdd } }, { $addToSet: { events: eventId } });
+    if (!eventId || !updates) {
+      throw new ApiError(400, 'Event ID and updates are required');
     }
 
-    if (usersToRemove.length > 0) {
-      await User.updateMany({ _id: { $in: usersToRemove } }, { $pull: { events: eventId } });
+    const oldEvent = await Event.findById(eventId);
+    if (!oldEvent) {
+      throw new ApiError(404, 'Event not found');
     }
 
-    const remainingUsers = await User.find({
-      _id: { $in: newUserIds },
-    }).select('name');
+    let messageParts = [];
+    let hasChanges = false;
 
-    const userNames = remainingUsers.map((u) => u.name).join(', ');
-    messageParts.push(`Participants updated: now includes ${userNames}`);
-  }
+    if (
+      updates.users &&
+      JSON.stringify(updates.users.sort()) !== JSON.stringify(oldEvent.users.map((id) => id.toString()).sort())
+    ) {
+      const newUserIds = updates.users.map((id) => id.toString());
+      const oldUserIds = oldEvent.users.map((id) => id.toString());
 
-  const fieldChanges = [];
+      const usersToAdd = newUserIds.filter((id) => !oldUserIds.includes(id));
+      const usersToRemove = oldUserIds.filter((id) => !newUserIds.includes(id));
 
-  if (updates.startDate && updates.startDate !== oldEvent.startDate) fieldChanges.push('startDate');
-  if (updates.startTime && updates.startTime !== oldEvent.startTime) fieldChanges.push('startTime');
-  if (updates.endDate && updates.endDate !== oldEvent.endDate) fieldChanges.push('endDate');
-  if (updates.endTime && updates.endTime !== oldEvent.endTime) fieldChanges.push('endTime');
+      if (usersToAdd.length > 0) {
+        await User.updateMany({ _id: { $in: usersToAdd } }, { $addToSet: { events: eventId } });
+      }
 
-  if (fieldChanges.length > 0) {
-    messageParts.push(`${fieldChanges.join(', ')} updated`);
-  }
+      if (usersToRemove.length > 0) {
+        await User.updateMany({ _id: { $in: usersToRemove } }, { $pull: { events: eventId } });
+      }
 
-  const message = messageParts.join(' | ');
+      const remainingUsers = await User.find({ _id: { $in: newUserIds } }).select('name');
+      const userNames = remainingUsers.map((u) => u.name).join(', ');
+      messageParts.push(`Profiles changed to: ${userNames}`);
 
-  if (message) {
+      hasChanges = true;
+    }
+
+    const fieldChanges = [];
+    const fieldsToCheck = ['startDate', 'startTime', 'endDate', 'endTime', 'timezone'];
+
+    for (const field of fieldsToCheck) {
+      if (updates[field] && updates[field] !== oldEvent[field]) {
+        fieldChanges.push(field);
+      }
+    }
+
+    if (fieldChanges.length > 0) {
+      messageParts.push(`${fieldChanges.join(', ')} updated`);
+      hasChanges = true;
+    }
+
+    if (!hasChanges) {
+      throw new ApiError(400, 'No changes detected — nothing to update.');
+    }
+
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, updates, {
+      new: true,
+    }).populate('users', 'name');
+
+    const message = messageParts.join(' | ');
+
     await EventUpdateHistory.create({
       event: eventId,
       message,
       updatedAt: clientUpdatedAt || new Date(),
     });
-  }
 
-  const remainingUsers = updatedEvent.users.map((u) => u.name);
+    const remainingUsers = updatedEvent.users.map((u) => u.name);
 
-  return res.status(200).json(
-    new ApiResponse(
-      200,
-      {
-        updatedEvent,
-        remainingUsers,
-        changes: {
-          changedFields: fieldChanges,
-          updatedAt: clientUpdatedAt || new Date(),
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          updatedEvent,
+          remainingUsers,
+          changes: {
+            changedFields: fieldChanges,
+            updatedAt: clientUpdatedAt || new Date(),
+          },
+          message,
         },
-        message,
-      },
-      'Event updated successfully'
-    )
-  );
+        'Event updated successfully'
+      )
+    );
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw new ApiError(error.statusCode || 500, error.message || 'Failed to update event');
+  }
 });
 
 const getEventLogs = asyncHandler(async (req, res) => {

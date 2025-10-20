@@ -1,36 +1,32 @@
-import { Check, ChevronsUpDown, Search } from "lucide-react";
-import { useState } from "react";
+import { Check, ChevronsUpDown, Search } from 'lucide-react';
+import { useState } from 'react';
 
 export default function TimezoneDropDown({ selected, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const timezones = [
-    "America/New_York",
-    "America/Chicago",
-    "America/Denver",
-    "America/Los_Angeles",
-    "America/Anchorage",
-    "Pacific/Honolulu",
-    "Europe/London",
-    "Europe/Paris",
-    "Europe/Berlin",
-    "Asia/Kolkata",
+    'America/New_York',
+    'America/Chicago',
+    'America/Denver',
+    'America/Los_Angeles',
+    'America/Anchorage',
+    'Pacific/Honolulu',
+    'Europe/London',
+    'Europe/Paris',
+    'Europe/Berlin',
+    'Asia/Kolkata',
   ];
 
-  const filtered = timezones.filter((zone) =>
-    zone.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = timezones.filter((zone) => zone.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="w-full mt-2 relative">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10"
+        className="flex items-center bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 cursor-pointer pl-4 pr-10"
       >
-        <span className="text-sm text-gray-700 font-medium">
-          {selected || "Select timezone"}
-        </span>
+        <span className="text-sm text-gray-700 font-medium">{selected || 'Select timezone'}</span>
         <ChevronsUpDown className="absolute size-6 right-3 text-gray-400" />
       </div>
 
@@ -60,9 +56,7 @@ export default function TimezoneDropDown({ selected, onSelect }) {
               className="flex items-center px-4 py-2 text-sm hover:bg-purple-500/80 rounded-lg cursor-pointer"
             >
               <div className="w-5 flex justify-center">
-                {selected === zone && (
-                  <Check className="text-gray-400 size-5" />
-                )}
+                {selected === zone && <Check className="text-gray-400 size-5" />}
               </div>
               <span className="ml-2">{zone}</span>
             </div>

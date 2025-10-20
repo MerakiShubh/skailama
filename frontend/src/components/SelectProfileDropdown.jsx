@@ -53,7 +53,7 @@ export default function SelectProfileDropdown() {
     <div className="w-full mt-2 relative" ref={dropdownRef}>
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center bg-gray-200/70 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
+        className="flex items-center bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
         <span className="text-sm text-gray-600 font-medium">{selectedUser ? selectedUser.name : 'Select profile'}</span>
 
@@ -61,7 +61,7 @@ export default function SelectProfileDropdown() {
       </div>
 
       {isOpen && (
-        <div className="absolute left-0 mt-1 w-52 bg-white rounded-md shadow-lg border border-gray-300 z-10">
+        <div className="absolute right-4 mt-1 w-52 bg-white rounded-md shadow-lg border border-gray-300 z-10">
           <div className="flex items-center h-8 w-full border-b border-gray-200 bg-gray-50 gap-x-2 sticky top-0">
             <div className="flex items-center w-5 ml-5">
               <Search className="size-4 text-gray-400" />
@@ -125,7 +125,7 @@ export default function SelectProfileDropdown() {
                 >
                   {isCreating ? (
                     <>
-                      <Loader2 className="animate-spin size-4" /> Adding...
+                      <Loader2 className="animate-spin size-4 text-white" />
                     </>
                   ) : (
                     'Add'

@@ -6,9 +6,9 @@ const API = axios.create({
 });
 
 export const createEvent = async (payload) => {
-  console.log('payload----------------_>', payload);
+  // console.log('payload----------------_>', payload);
   const { data } = await API.post('/events', payload);
-  console.log('create event--------------->', data);
+  // console.log('create event--------------->', data);
   return data;
 };
 
@@ -18,14 +18,14 @@ export const getAllEvents = async (userId) => {
 };
 
 export const updateEvent = async (payload) => {
-  console.log('update -------------->event', payload);
+  // console.log('update -------------->event', payload);
   const { data } = await API.put('/events', payload);
-  console.log('------------------------------------------>', data);
+  // console.log('------------------------------------------>', data);
   return data;
 };
 
 export const getEventLogs = async (eventId) => {
-  console.log('-----------', eventId);
+  // console.log('-----------', eventId);
   const { data } = await API.post('/events/logs', { eventId });
   return data;
 };
