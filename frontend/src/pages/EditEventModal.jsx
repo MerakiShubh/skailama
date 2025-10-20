@@ -38,11 +38,13 @@ const EditEventModal = ({ event, onClose }) => {
         timezone,
         startDate: dayjs(startDate).format('YYYY-MM-DD'),
         endDate: dayjs(endDate).format('YYYY-MM-DD'),
-        startTime: dayjs(startTime).format('HH:mm'),
-        endTime: dayjs(endTime).format('HH:mm'),
+        startTime: dayjs(startTime).format('HH:mm A'),
+        endTime: dayjs(endTime).format('HH:mm A'),
       },
       clientUpdatedAt: new Date().toISOString(),
     };
+
+    console.log('update payload -------------->', payload);
 
     updateEvent(payload, {
       onSuccess: () => {
@@ -91,7 +93,7 @@ const EditEventModal = ({ event, onClose }) => {
         <h1 className="font-medium text-sm mt-4">Start Date & Time</h1>
         <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
-            className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
+            className="flex items-center w-3/4 bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => setOpenDropdown(openDropdown === 'startDate' ? null : 'startDate')}
             ref={startDateRef}
           >
@@ -140,7 +142,7 @@ const EditEventModal = ({ event, onClose }) => {
         <h1 className="font-medium text-sm mt-4">End Date & Time</h1>
         <div className="w-full flex flex-col lg:flex-row justify-center items-center gap-2">
           <div
-            className="flex items-center w-3/4 bg-gray-200/70 rounded-md h-10 mt-2 relative cursor-pointer"
+            className="flex items-center w-3/4 bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 mt-2 relative cursor-pointer"
             onClick={() => setOpenDropdown(openDropdown === 'endDate' ? null : 'endDate')}
             ref={endDateRef}
           >

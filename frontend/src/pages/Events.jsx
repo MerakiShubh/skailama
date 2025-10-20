@@ -43,13 +43,13 @@ const Events = () => {
   };
 
   return (
-    <div className="w-full lg:w-1/2 h-full bg-white rounded-lg shadow-2xl">
+    <div className="w-full h-full lg:w-1/2 bg-white rounded-lg shadow-2xl flex-1">
       <div className="p-6 h-full">
         <h2 className="font-medium text-xl text-black">Events</h2>
         <h3 className="font-medium text-sm mt-4">View in Timezone</h3>
         <TimezoneDropDown selected={timezone} onSelect={setTimezone} />
 
-        <div className="mt-8 h-2/3 w-full rounded-md shadow-lg border border-gray-200 overflow-y-auto">
+        <div className="mt-8 h-2/3 w-full rounded-md shadow-lg  border border-gray-200 overflow-y-auto">
           {!selectedUser?._id ? (
             <div className="text-sm text-gray-500 p-4 text-center">No events</div>
           ) : isLoading ? (
