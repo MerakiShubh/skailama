@@ -146,15 +146,15 @@ const CreateEventForm = () => {
             )}
           </div>
 
-          <div className="flex items-center w-1/3 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
+          <div className="flex items-center w-1/2 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
             <div
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
               onClick={() => setOpenDropdown(openDropdown === 'startTime' ? null : 'startTime')}
             >
-              <p className="text-sm text-gray-600 font-medium">
+              <p className="text-sm text-gray-600 font-medium ">
                 {startTime ? dayjs(startTime).format('hh:mm A') : 'Select time'}
               </p>
-              <Clock size={18} className="text-gray-500" />
+              <Clock size={18} className="text-gray-500 shrink-0" />
             </div>
 
             {openDropdown === 'startTime' && (
@@ -197,7 +197,7 @@ const CreateEventForm = () => {
             )}
           </div>
 
-          <div className="flex items-center w-1/3 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
+          <div className="flex items-center w-1/2 lg:w-1/4 bg-gray-200/70 rounded-md h-10 mt-2 relative">
             <div
               className="flex items-center justify-between w-full h-full px-3 cursor-pointer"
               onClick={(e) => {
@@ -208,7 +208,7 @@ const CreateEventForm = () => {
               <p className="text-sm text-gray-600 font-medium">
                 {endTime ? dayjs(endTime).format('hh:mm A') : 'Select time'}
               </p>
-              <Clock size={18} className="text-gray-500" />
+              <Clock size={18} className="text-gray-500 shrink-0" />
             </div>
 
             {openDropdown === 'endTime' && (

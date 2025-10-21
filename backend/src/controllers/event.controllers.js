@@ -27,7 +27,7 @@ const createEvent = asyncHandler(async (req, res) => {
 });
 
 const getAllEvents = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   if (!userId) {
     throw new ApiError(400, 'User ID is required');
@@ -146,16 +146,17 @@ const updateEvent = asyncHandler(async (req, res) => {
 });
 
 const getEventLogs = asyncHandler(async (req, res) => {
-  const { eventId } = req.body;
-
+  const { eventId } = req.params;
+  console.log('called');
   if (!eventId) {
     throw new ApiError(400, 'Event ID is required');
   }
 
   const logs = await EventUpdateHistory.find({ event: eventId }).sort({ updatedAt: -1 }).lean();
 
+  // ✅ Return empty array instead of throwing error if no logs
   if (!logs.length) {
-    throw new ApiError(404, 'No update logs found for this event');
+    return res.status(200).json(new ApiResponse(200, [], 'No update logs found for this event'));
   }
 
   return res.status(200).json(new ApiResponse(200, logs, 'Event update logs fetched successfully'));

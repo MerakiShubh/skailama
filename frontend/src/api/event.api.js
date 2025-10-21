@@ -13,7 +13,8 @@ export const createEvent = async (payload) => {
 };
 
 export const getAllEvents = async (userId) => {
-  const { data } = await API.post('/events/getAllEvents', { userId });
+  // console.log('-----------------', userId);
+  const { data } = await API.get(`/events/getAllEvents/${userId}`);
   return data;
 };
 
@@ -23,9 +24,9 @@ export const updateEvent = async (payload) => {
   // console.log('------------------------------------------>', data);
   return data;
 };
-
 export const getEventLogs = async (eventId) => {
-  // console.log('-----------', eventId);
-  const { data } = await API.post('/events/logs', { eventId });
+  // console.log('logssss-----------', eventId);
+  const { data } = await API.get(`/events/logs/${eventId}`);
+  // console.log('log ------------------> from api', data);
   return data;
 };

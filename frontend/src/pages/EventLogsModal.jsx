@@ -6,6 +6,8 @@ import { useGetEventLogs } from '../hooks/event.hook.js';
 const EventLogsModal = ({ eventId, onClose }) => {
   const { data, isLoading, isError } = useGetEventLogs(eventId);
 
+  console.log('data log --------------->', data);
+
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">

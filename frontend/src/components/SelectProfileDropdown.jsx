@@ -55,7 +55,9 @@ export default function SelectProfileDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center bg-gray-200/70 hover:bg-purple-500/90 rounded-md h-10 cursor-pointer pl-4 pr-10 relative"
       >
-        <span className="text-sm text-gray-600 font-medium">{selectedUser ? selectedUser.name : 'Select profile'}</span>
+        <span className="text-xs font-bold md:text-sm text-gray-600 md:font-medium">
+          {selectedUser ? selectedUser.name : 'Select profile'}
+        </span>
 
         <ChevronsUpDown className="absolute size-6 right-3 text-gray-400" />
       </div>

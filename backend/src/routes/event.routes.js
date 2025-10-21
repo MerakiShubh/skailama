@@ -4,8 +4,8 @@ import { createEvent, getAllEvents, updateEvent, getEventLogs } from '../control
 const router = express.Router();
 
 router.post('/', createEvent);
-router.post('/getAllEvents', getAllEvents);
+router.get('/getAllEvents/:userId', getAllEvents);
 router.put('/', updateEvent);
-router.post('/logs', getEventLogs);
+router.get('/logs/:eventId', getEventLogs);
 
 export default router;

@@ -33,16 +33,16 @@ const DatePicker = ({ onDateChange, minDate }) => {
   };
 
   const handleDateClick = (day) => {
-    console.log('date picked--------------->', day);
+    // console.log('date picked--------------->', day);
     const newDate = new Date(Date.UTC(currentYear, currentMonth, day));
-    console.log('new DAte ---------__>', newDate);
+    // console.log('new DAte ---------__>', newDate);
 
     if (minDate && newDate < new Date(minDate.setHours(0, 0, 0, 0))) return;
 
     setSelectedDate(newDate);
-    console.log('new date after selected date', newDate);
+    // console.log('new date after selected date', newDate);
     onDateChange?.(newDate);
-    console.log('new date after ondatechange', newDate);
+    // console.log('new date after ondatechange', newDate);
   };
 
   const monthNames = [
